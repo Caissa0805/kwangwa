@@ -1,5 +1,40 @@
 .opening-root{position:relative}.opening-dark{position:fixed;inset:0;background:#080e15;z-index:0;pointer-events:none}.opening-content{position:relative;z-index:1}.opening-guard{position:fixed;inset:0;z-index:9999;touch-action:none;pointer-events:auto}.opening-star{position:absolute;left:0;top:0;width:32px;height:32px;color:#bedbdc;will-change:transform,opacity}.opening-root[data-intro-active] [data-reveal-logo]{visibility:hidden}@media(prefers-reduced-motion:reduce){.opening-guard,.opening-dark{display:none}.opening-root[data-intro-active] [data-reveal-logo]{visibility:visible}.opening-content{clip-path:none!important}}
 .opening-center{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none}.opening-halo{position:absolute;width:280px;height:280px;left:-140px;top:-140px;border-radius:50%;background:radial-gradient(circle,rgba(168,225,230,.2) 0%,rgba(95,183,202,.085) 28%,rgba(69,134,162,.025) 52%,transparent 72%);will-change:transform,opacity}.opening-dot{position:absolute;left:-2px;top:-2px;width:4px;height:4px;border-radius:50%;background:#e3ffff;box-shadow:0 0 8px 2px #c3f6ff,0 0 22px 5px #91dbe766;will-change:transform,opacity}.opening-label{position:absolute;top:33px;left:-100px;width:200px;text-align:center;color:#d5e9ea;font-family:Manrope,Arial,sans-serif;font-size:16px;font-weight:500;letter-spacing:3px;will-change:transform,opacity}
 .opening-halo{width:100vmax;height:100vmax;left:-50vmax;top:-50vmax;background:radial-gradient(circle,rgba(168,225,230,.26) 0%,rgba(95,183,202,.16) 20%,rgba(69,134,162,.075) 40%,rgba(37,85,113,.025) 57%,transparent 72%)}
-.opening-root .admin-main{opacity:1;transform:translateY(0);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1)}.opening-root[data-intro-active] .admin-main{opacity:0;transform:translateY(14px)}.opening-root .admin-sidebar>.admin-eyebrow,.opening-root .admin-sidebar>.admin-nav,.opening-root .admin-sidebar-bottom{opacity:1;transition:opacity .55s ease-out .08s}.opening-root[data-intro-active] .admin-sidebar>.admin-eyebrow,.opening-root[data-intro-active] .admin-sidebar>.admin-nav,.opening-root[data-intro-active] .admin-sidebar-bottom{opacity:0}@media(prefers-reduced-motion:reduce){.opening-root .admin-main,.opening-root .admin-sidebar>.admin-eyebrow,.opening-root .admin-sidebar>.admin-nav,.opening-root .admin-sidebar-bottom{transition:none!important;transform:none!important;opacity:1!important}}
-
+/* The outer reveal owns the timing; content animations start only after it finishes. */
+.opening-root[data-intro-active] .admin-main{visibility:hidden}
+.opening-root .admin-headline-mask{display:block;overflow:hidden}
+.opening-root:not([data-intro-active]) .admin-headline-mask{animation:headlineSweep 1.05s cubic-bezier(.4,0,.2,1) .08s both}
+@keyframes headlineSweep{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0% 0 0)}}
+@keyframes studioText{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.opening-root:not([data-intro-active]) :is(.admin-top,.admin-welcome .admin-eyebrow,.admin-welcome p,.admin-welcome>.admin-primary,.admin-section-heading h2,.admin-section-heading .admin-eyebrow,.admin-stat>span,.admin-stat>strong,.admin-preview-caption small,.admin-preview-caption strong,.admin-preview-description,.admin-mini-card strong,.admin-mini-card div>span,.admin-login h1,.admin-login p){animation:studioText .5s cubic-bezier(.22,1,.36,1) var(--text-delay,.12s) both}
+.opening-root .admin-welcome p{--text-delay:.35s}
+.opening-root .admin-welcome>.admin-primary{--text-delay:.3s}
+.opening-root .admin-stat:nth-child(1){--text-delay:.18s}
+.opening-root .admin-stat:nth-child(2){--text-delay:.26s}
+.opening-root .admin-stat:nth-child(3){--text-delay:.34s}
+.opening-root .admin-stat>strong{animation-delay:calc(var(--text-delay,.18s) + .08s)!important}
+.opening-root .admin-editor .admin-section-heading{--text-delay:.26s}
+.opening-root .admin-library .admin-section-heading{--text-delay:.34s}
+.opening-root .admin-preview-caption small{--text-delay:.3s}
+.opening-root .admin-preview-caption strong{--text-delay:.38s}
+.opening-root .admin-preview-description{--text-delay:.46s}
+.opening-root .admin-mini-card strong{--text-delay:.3s}
+.opening-root .admin-mini-card div>span{--text-delay:.4s}
+/* Extend the glass surface and its clipping boundary together. Labels stay fixed. */
+.opening-root .admin-sidebar.glass{isolation:isolate;background:none;backdrop-filter:none;box-shadow:none;border-color:transparent;clip-path:inset(0 0 0 0 round 22px);transition:clip-path .85s cubic-bezier(.65,0,.35,1)}
+.opening-root .admin-sidebar.glass::before{content:"";position:absolute;z-index:-1;left:0;right:0;top:0;height:100%;box-sizing:border-box;border:1px solid #e3f4ff30;border-radius:22px;background:linear-gradient(135deg,#d5f2ff18,#b4d7eb08);backdrop-filter:blur(22px);box-shadow:inset 0 1px 0 #ffffff16;transition:height .85s cubic-bezier(.65,0,.35,1)}
+.opening-root[data-intro-active] .admin-sidebar.glass{clip-path:inset(0 0 calc(100% - 108px) 0 round 22px)}
+.opening-root[data-intro-active] .admin-sidebar.glass::before{height:108px}
+.opening-root .admin-sidebar>.admin-nav,.opening-root .admin-sidebar>.admin-eyebrow,.opening-root .admin-sidebar-bottom{opacity:1;transition:none}
+.opening-root .admin-nav.active{position:relative;isolation:isolate;background:transparent;border-color:transparent}
+.opening-root .admin-nav.active::before,.opening-root .admin-nav.active::after{content:"";position:absolute;inset:-1px;border-radius:11px;pointer-events:none;z-index:-1}
+.opening-root .admin-nav.active::before{background:#e0f1ff18}
+.opening-root .admin-nav.active::after{border:1px solid #e3f3ff3b}
+.opening-root[data-intro-active] .admin-nav.active::before,.opening-root[data-intro-active] .admin-nav.active::after{opacity:0}
+.opening-root:not([data-intro-active]) .admin-nav.active::before{animation:overviewFill .45s ease-out .3s both}
+.opening-root:not([data-intro-active]) .admin-nav.active::after{animation:overviewOutline .55s cubic-bezier(.4,0,.2,1) .26s both}
+@keyframes overviewFill{from{opacity:0}to{opacity:1}}
+@keyframes overviewOutline{from{opacity:0;clip-path:inset(0 100% 0 0 round 11px)}to{opacity:1;clip-path:inset(0 0% 0 0 round 11px)}}
+@media(max-width:800px){.opening-root .admin-sidebar.glass,.opening-root[data-intro-active] .admin-sidebar.glass{clip-path:none}.opening-root .admin-sidebar.glass::before,.opening-root[data-intro-active] .admin-sidebar.glass::before{height:100%}}
+@media(prefers-reduced-motion:reduce){.opening-root .admin-main{visibility:visible!important}.opening-root .admin-sidebar.glass{clip-path:none!important}.opening-root .admin-sidebar.glass::before{height:100%!important}.opening-root .admin-main *,.opening-root .admin-sidebar,.opening-root .admin-sidebar::before,.opening-root .admin-nav::before,.opening-root .admin-nav::after{animation:none!important;transition:none!important;clip-path:none!important;opacity:1!important}}
