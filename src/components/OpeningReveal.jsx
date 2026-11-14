@@ -11,17 +11,15 @@ export default function OpeningReveal({children}){
   const prevent=e=>e.preventDefault();
   window.addEventListener('wheel',prevent,{passive:false});
   const readyImage=new Image();readyImage.src=location.pathname==='/admin'?'/images/admin-karina.jpg':'/images/karina.jpg';
+  readyImage.decode().catch(()=>{});
   async function open(){
    const center={x:innerWidth/2-16,y:innerHeight/2-16};
    star.set({...center,opacity:0,scale:.025});
    light.set({opacity:0,scale:.2});
    label.set({opacity:1,y:0});
    dot.set({opacity:0,scale:.2});
-   await dot.start({opacity:1,scale:1,transition:{duration:.18,ease:'easeOut'}});
-   await Promise.all([readyImage.decode().catch(()=>{}),document.fonts.ready]);
-   if(!live)return;
    await Promise.all([
-    dot.start({opacity:[1,1,0],scale:[1,1.5,.4],transition:{duration:.55,times:[0,.3,1],ease:'easeInOut'}}),
+    dot.start({opacity:[0,1,0],scale:[.2,1,1.5],transition:{duration:.5,times:[0,.15,1],ease:'easeOut'}}),
     star.start({opacity:[0,1,1],scale:[.025,.45,1],transition:{duration:.65,times:[0,.45,1],ease:[.22,1,.36,1]}}),
     light.start({opacity:1,scale:1,transition:{duration:.65,ease:'easeOut'}})
    ]);
