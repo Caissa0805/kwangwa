@@ -16,12 +16,13 @@ export default function OpeningReveal({children}){
    const center={x:innerWidth/2-16,y:innerHeight/2-16};
    star.set({...center,opacity:0,scale:.025});
    light.set({opacity:0,scale:.2});
-   label.set({opacity:1,y:0});
+   label.set({opacity:0,y:4,clipPath:'inset(0 100% 0 0)'});
    dot.set({opacity:0,scale:.2});
    await Promise.all([
     dot.start({opacity:[0,1,0],scale:[.2,1,1.5],transition:{duration:.5,times:[0,.15,1],ease:'easeOut'}}),
     star.start({opacity:[0,1,1],scale:[.025,.45,1],transition:{duration:.65,times:[0,.45,1],ease:[.22,1,.36,1]}}),
-    light.start({opacity:1,scale:1,transition:{duration:.65,ease:'easeOut'}})
+    light.start({opacity:1,scale:1,transition:{duration:.65,ease:'easeOut'}}),
+    label.start({opacity:1,y:0,clipPath:'inset(0 0% 0 0)',transition:{duration:.5,ease:[.4,0,.2,1]}})
    ]);
    if(!live)return;
    const anchor=content.current?.querySelector('[data-reveal-logo]');
@@ -48,7 +49,6 @@ export default function OpeningReveal({children}){
  return <div className="opening-root" data-intro-active={finished?undefined:''}>
  {!finished&&<div className="opening-dark" aria-hidden="true"><div className="opening-center"><motion.div className="opening-halo" initial={{opacity:0}} animate={light}/></div></div>}
  <motion.div ref={content} className="opening-content" inert={finished?undefined:true} initial={reduce?false:{clipPath:'circle(0px at 0px 0px)'}} animate={mask} style={{willChange:finished?'auto':'clip-path'}}>{children}</motion.div>
- {!finished&&<div className="opening-guard" data-revealing={revealing?'true':'false'} aria-hidden="true"><div className="opening-center"><motion.div className="opening-dot" initial={{opacity:0}} animate={dot}/><motion.div className="opening-label" initial={{opacity:1,y:0}} animate={label}>kwangya</motion.div></div><motion.div className="opening-star" initial={{opacity:0}} animate={star}><BrandMark style={{width:32,height:32}}/></motion.div></div>}
+ {!finished&&<div className="opening-guard" data-revealing={revealing?'true':'false'} aria-hidden="true"><div className="opening-center"><motion.div className="opening-dot" initial={{opacity:0}} animate={dot}/><motion.div className="opening-label" initial={{opacity:0,y:4,clipPath:"inset(0 100% 0 0)"}} animate={label}>kwangya</motion.div></div><motion.div className="opening-star" initial={{opacity:0}} animate={star}><BrandMark style={{width:32,height:32}}/></motion.div></div>}
  </div>
 }
-
