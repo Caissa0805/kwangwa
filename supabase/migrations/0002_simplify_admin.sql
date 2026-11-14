@@ -1,0 +1,1 @@
+alter table public.wallpapers alter column photo_year drop not null; alter table public.wallpapers alter column source_url drop not null; create policy "Admins read draft wallpaper files" on storage.objects for select to authenticated using (bucket_id = 'wallpapers' and exists (select 1 from public.admin_users where user_id = (select auth.uid())));

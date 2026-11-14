@@ -1,0 +1,2 @@
+import React from 'react';
+export default function BrandMark({className='',...props}){return <span className={className} {...props} style={{display:'inline-flex',verticalAlign:'middle',width:'1em',height:'1em',...props.style}}><svg aria-hidden="true" viewBox="0 0 32 32" width="100%" height="100%" fill="none"><path d="M16 2v28M2 16h28M6.1 6.1l19.8 19.8M6.1 25.9L25.9 6.1" stroke="currentColor" strokeWidth="1.8"/></svg></span>}
