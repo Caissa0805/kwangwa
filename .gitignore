@@ -1,0 +1,12 @@
+node_modules/
+.env.local
+dist/
+*.log
+.playwright-cli/
+qa/
+
+qa-*.png
+qa-*.jpg
+public/images/expanded/
+public/images/thumbs/
+work/
