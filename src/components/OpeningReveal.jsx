@@ -33,7 +33,6 @@ export default function OpeningReveal({children}){
    mask.set({clipPath:'circle(0px at '+originX+'px '+originY+'px)'});
    await Promise.all([
     label.start({opacity:0,y:-4,transition:{duration:.22,ease:'easeIn'}}),
-    light.start({opacity:0,scale:1.12,transition:{duration:.42,ease:'easeOut'}}),
     star.start({x:x-16,y:y-16,scale:box.width/32,transition:{duration:.7,ease:[.22,.65,.3,1]}})
    ]);
    if(!live)return;
@@ -47,9 +46,9 @@ export default function OpeningReveal({children}){
  },[reduce,star,mask,light,label,dot]);
  const finished=done||reduce;
  return <div className="opening-root" data-intro-active={finished?undefined:''}>
- {!finished&&<div className="opening-dark" aria-hidden="true"/>}
+ {!finished&&<div className="opening-dark" aria-hidden="true"><div className="opening-center"><motion.div className="opening-halo" initial={{opacity:0}} animate={light}/></div></div>}
  <motion.div ref={content} className="opening-content" inert={finished?undefined:true} initial={reduce?false:{clipPath:'circle(0px at 0px 0px)'}} animate={mask} style={{willChange:finished?'auto':'clip-path'}}>{children}</motion.div>
- {!finished&&<div className="opening-guard" style={{background:revealing?'transparent':'#080e15'}} aria-hidden="true"><div className="opening-center"><motion.div className="opening-halo" initial={{opacity:0}} animate={light}/><motion.div className="opening-dot" initial={{opacity:0}} animate={dot}/><motion.div className="opening-label" initial={{opacity:1,y:0}} animate={label}>kwangya</motion.div></div><motion.div className="opening-star" initial={{opacity:0}} animate={star}><BrandMark style={{width:32,height:32}}/></motion.div></div>}
+ {!finished&&<div className="opening-guard" data-revealing={revealing?'true':'false'} aria-hidden="true"><div className="opening-center"><motion.div className="opening-dot" initial={{opacity:0}} animate={dot}/><motion.div className="opening-label" initial={{opacity:1,y:0}} animate={label}>kwangya</motion.div></div><motion.div className="opening-star" initial={{opacity:0}} animate={star}><BrandMark style={{width:32,height:32}}/></motion.div></div>}
  </div>
 }
 
