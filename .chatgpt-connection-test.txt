@@ -1,0 +1,2 @@
+Temporary file to verify write access to the Kwangwa repository.
+This file can be deleted after the test.
