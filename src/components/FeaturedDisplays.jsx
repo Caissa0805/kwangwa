@@ -1,0 +1,26 @@
+import React,{useState,useEffect,lazy,Suspense} from 'react';
+import {useReducedMotion} from 'framer-motion';
+import {ArrowUpRight,ArrowDown,ArrowRight,ChevronLeft,ChevronRight,Monitor,Smartphone,Pause,Play,SlidersHorizontal} from 'lucide-react';
+import {contentWallpaper} from '../siteContent';
+import './FeaturedDisplays.css';
+const Atmosphere=lazy(()=>import('./Atmosphere'));
+export function HeroSection({config,motion=true,onMotion=()=>{},onBrowse=()=>{},onSelect=()=>{},preview=false,previewIndex=0}){
+ const reduce=useReducedMotion(),[index,setIndex]=useState(0),[hover,setHover]=useState(false),[focused,setFocused]=useState(false),[visible,setVisible]=useState(!document.hidden);
+ const slides=(config?.slides||[]).filter(s=>preview||s.enabled);
+ const current=slides[(preview?previewIndex:index)%Math.max(slides.length,1)];
+ useEffect(()=>{setIndex(0)},[config]);
+ useEffect(()=>{const change=()=>setVisible(!document.hidden);document.addEventListener('visibilitychange',change);return()=>document.removeEventListener('visibilitychange',change)},[]);
+ useEffect(()=>{if(preview||!motion||reduce||hover||focused||!visible||slides.length<2)return;const timer=setInterval(()=>setIndex(i=>(i+1)%slides.length),Math.max(3,Number(config.interval)||7)*1000);return()=>clearInterval(timer)},[preview,motion,reduce,hover,focused,visible,slides.length,config.interval]);
+ if(!current)return null;
+ const slide=current,choose=(image=slide.image,title=slide.artist)=>onSelect(contentWallpaper(image,title,'featured-'+slide.id));
+ return <section className={'hero '+(preview?'display-preview-hero':'')} aria-label="Featured wallpapers" onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} onFocusCapture={()=>setFocused(true)} onBlurCapture={e=>{if(!e.currentTarget.contains(e.relatedTarget))setFocused(false)}}>
+ {!preview&&<div className="hero-light"><Suspense fallback={null}><Atmosphere motion={motion}/></Suspense></div>}
+ <div className="hero-picture"><img className="featured-image" key={slide.id+slide.image} src={slide.image} alt={slide.artist} fetchPriority="high"/><div className="hero-photo-fade"/></div>
+ <div className="hero-orbit orbit-one"/><div className="hero-orbit orbit-two"/>
+ <div className="hero-content featured-copy" key={slide.id}><div className="edition"><span className="live-dot"/>{slide.eyebrow}<span className="edition-line"/></div><h1>{slide.headlineTop}<br/>{slide.headlinePrefix} <em>{slide.headlineAccent}</em></h1><p style={{whiteSpace:'pre-line'}}>{slide.description}</p><div className="hero-actions"><button className="primary" onClick={()=>onBrowse()}>{slide.primaryLabel}<ArrowUpRight size={19}/></button><button className="text-button" onClick={()=>choose()}>{slide.secondaryLabel}<ArrowRight size={17}/></button></div><div className="hero-formats"><Monitor size={16}/><span>DESKTOP</span><i/><Smartphone size={15}/><span>MOBILE</span><i/><span>YOUR WORLD</span></div></div>
+ <div className="karina-signature"><span>{slide.signatureLabel}</span><strong>{slide.artist}</strong><small>{slide.subtitle}</small></div>
+ <button className="floating-preview" onClick={()=>choose(slide.cardImage||slide.image,slide.cardTitle)}><div className="tiny-phone"><img src={slide.cardImage||slide.image} alt={slide.cardTitle}/><span>{slide.clock}</span></div><div><small>{slide.cardEyebrow}</small><strong>{slide.cardTitle}</strong><span>{slide.cardCta}<ArrowUpRight size={15}/></span></div></button>
+ <div className="hero-bottom"><a href="#collection"><span>SCROLL TO DISCOVER</span><ArrowDown size={15}/></a><div className="hero-slider-controls">{!preview&&slides.length>1&&<button className="motion-button" aria-label="Previous featured wallpaper" onClick={()=>setIndex(i=>(i-1+slides.length)%slides.length)}><ChevronLeft size={16}/></button>}<span className="hero-page" aria-label={'Slide '+((preview?previewIndex:index)+1)+' of '+slides.length}>{String((preview?previewIndex:index)+1).padStart(2,'0')} <i>/ {String(slides.length).padStart(2,'0')}</i></span>{!preview&&slides.length>1&&<button className="motion-button" aria-label="Next featured wallpaper" onClick={()=>setIndex(i=>(i+1)%slides.length)}><ChevronRight size={16}/></button>}{!preview&&<button className="motion-button" onClick={()=>onMotion(!motion)} aria-label={motion?'Pause animation':'Play animation'}>{motion?<Pause size={13}/>:<Play size={13}/>}</button>}</div></div>
+ </section>
+}
+export function StudioSection({config:s,onSelect=()=>{}}){return <section className="studio-banner section" id="studio"><div className="studio-copy"><span className="studio-label"><SlidersHorizontal size={16}/>{s.label}</span><h2 style={{whiteSpace:'pre-line'}}>{s.headline}</h2><p>{s.description}</p><button className="primary" onClick={()=>onSelect(contentWallpaper(s.phoneImage,s.headline.replace(/\n/g,' '),'studio-feature'))}>{s.button}<ArrowUpRight size={18}/></button><span className="studio-note">{s.note}</span></div><div className="device-scene"><div className="desktop-device"><img src={s.desktopImage} alt="Desktop wallpaper composition"/><span>{s.desktopCaption}</span></div><div className="phone-device"><img src={s.phoneImage} alt="Phone wallpaper composition"/><div><small>{s.phoneDate}</small><strong>{s.phoneTime}</strong></div></div><span className="device-label">{s.desktopLabel}<span>+</span>{s.phoneLabel}</span></div></section>}
