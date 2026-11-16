@@ -21,3 +21,8 @@
 - CardStack shared by admin/public: isolated dark-backdrop dialog, fan animation, lifted selection, draggable position, icon-only layer/rotation/cover controls, reduced motion. Thumbnail always displays chosen cover. Public groups open stack then selected wallpaper.
 - Removed clock/date and clock toggle from WallpaperStudio. Phone/Desktop initial format comes from collection default_device.
 - Applied grouped_wallpaper_collections migration to hosted database; SQL recorded in docs/collection-schema.sql. Existing admin-only mutations preserved; published storage reads include photo members.
+
+- Correction: Individual upload and Set upload are separate tabs; the original card preview with artist/title/group overlays is restored in both. No unrelated public layout changes.
+- Public gallery uses its original clipped image/hover; sets add only a Layers2 Set/count badge. Clicking a set opens WallpaperStudio directly, cover first, with previous/next controls. Removed public stack-selection interstitial.
+- Admin arrangement only: removed drag and ignores old x/y offsets; cover pinned front, fan direction reversed, bounded rotation and non-cover layer controls retained. Card borders restored. Saved photo order puts cover at the top of the stack.
+- Validation: build, mocked browser save/reopen/add-photo checks, separate file-picker modes, live text, no drag, cover persisted front, clipped hover, no public stack dialog, viewer next/previous, mobile overflow. No deployment.
