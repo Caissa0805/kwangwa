@@ -16,3 +16,8 @@
 - Studio display: editable desktop/phone photos, heading/body/button/note, device captions, clock and date.
 - Persistence: migration 0004 applied to Supabase; public site_content reads and site-media photos, admin-only writes. Images upload on Save, retaining original quality. Existing saved files remain available to avoid breaking shared references.
 - Validation: production build and Chrome browser checks with mocked auth/API: fifth slide, image-upload payload, public content propagation, disable => 04, autoplay, unsaved guard, mobile overflow, zero JS errors. Real owner upload remains to be exercised. No deployment.
+
+- 16 November: replaced per-file bulk posts with one CollectionEditor for single/multiple photos. Group title, description, default_device, cover storage_path, and ordered photos JSON saved in one row. Add more photos when editing; new uploads roll back on failed save. Earlier individual posts remain unchanged.
+- CardStack shared by admin/public: isolated dark-backdrop dialog, fan animation, lifted selection, draggable position, icon-only layer/rotation/cover controls, reduced motion. Thumbnail always displays chosen cover. Public groups open stack then selected wallpaper.
+- Removed clock/date and clock toggle from WallpaperStudio. Phone/Desktop initial format comes from collection default_device.
+- Applied grouped_wallpaper_collections migration to hosted database; SQL recorded in docs/collection-schema.sql. Existing admin-only mutations preserved; published storage reads include photo members.
