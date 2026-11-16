@@ -6,3 +6,5 @@
 
 @media(max-width:800px){.admin-shell .admin-sidebar .admin-nav.active{display:flex}}
 @media(max-width:700px){.display-canvas .hero{height:850px;min-height:850px}.display-canvas .hero h1{font-size:64px}.display-canvas .hero-content p{font-size:13px}.display-canvas .studio-banner{padding:40px 7% 45px}.display-canvas .studio-copy h2{font-size:38px}.display-canvas .studio-copy p{font-size:12px}}
+
+.display-bottom-actions{display:flex;justify-content:flex-end;margin:22px 0 30px;padding:0 2px}.display-bottom-actions .admin-primary{min-width:155px}
