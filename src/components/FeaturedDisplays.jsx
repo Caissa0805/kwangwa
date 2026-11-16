@@ -1,20 +1,22 @@
+import {loadImage} from '../imagePerformance';
 import React,{useState,useEffect,lazy,Suspense} from 'react';
 import {useReducedMotion} from 'framer-motion';
 import {ArrowUpRight,ArrowDown,ArrowRight,ChevronLeft,ChevronRight,Monitor,Smartphone,Pause,Play,SlidersHorizontal} from 'lucide-react';
 import {contentWallpaper} from '../siteContent';
 import './FeaturedDisplays.css';
 const Atmosphere=lazy(()=>import('./Atmosphere'));
-export function HeroSection({config,motion=true,onMotion=()=>{},onBrowse=()=>{},onSelect=()=>{},preview=false,previewIndex=0}){
+export function HeroSection({config,motion=true,paused=false,onMotion=()=>{},onBrowse=()=>{},onSelect=()=>{},preview=false,previewIndex=0}){
  const reduce=useReducedMotion(),[index,setIndex]=useState(0),[hover,setHover]=useState(false),[focused,setFocused]=useState(false),[visible,setVisible]=useState(!document.hidden);
  const slides=(config?.slides||[]).filter(s=>preview||s.enabled);
  const current=slides[(preview?previewIndex:index)%Math.max(slides.length,1)];
+ useEffect(()=>{if(preview||paused||!visible||slides.length<2)return;const timer=setTimeout(()=>loadImage(slides[(index+1)%slides.length].image).catch(()=>{}),800);return()=>clearTimeout(timer)},[index,config,preview,paused,visible]);
  useEffect(()=>{setIndex(0)},[config]);
  useEffect(()=>{const change=()=>setVisible(!document.hidden);document.addEventListener('visibilitychange',change);return()=>document.removeEventListener('visibilitychange',change)},[]);
- useEffect(()=>{if(preview||!motion||reduce||hover||focused||!visible||slides.length<2)return;const timer=setInterval(()=>setIndex(i=>(i+1)%slides.length),Math.max(3,Number(config.interval)||7)*1000);return()=>clearInterval(timer)},[preview,motion,reduce,hover,focused,visible,slides.length,config.interval]);
+ useEffect(()=>{if(preview||paused||!motion||reduce||hover||focused||!visible||slides.length<2)return;const timer=setInterval(()=>setIndex(i=>(i+1)%slides.length),Math.max(3,Number(config.interval)||7)*1000);return()=>clearInterval(timer)},[preview,paused,motion,reduce,hover,focused,visible,slides.length,config.interval]);
  if(!current)return null;
  const slide=current,choose=(image=slide.image,title=slide.artist)=>onSelect(contentWallpaper(image,title,'featured-'+slide.id));
  return <section className={'hero '+(preview?'display-preview-hero':'')} aria-label="Featured wallpapers" onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} onFocusCapture={()=>setFocused(true)} onBlurCapture={e=>{if(!e.currentTarget.contains(e.relatedTarget))setFocused(false)}}>
- {!preview&&<div className="hero-light"><Suspense fallback={null}><Atmosphere motion={motion}/></Suspense></div>}
+ {!preview&&<div className="hero-light"><Suspense fallback={null}><Atmosphere paused={paused} motion={motion}/></Suspense></div>}
  <div className="hero-picture"><img className="featured-image" key={slide.id+slide.image} src={slide.image} alt={slide.artist} fetchPriority="high"/><div className="hero-photo-fade"/></div>
  <div className="hero-orbit orbit-one"/><div className="hero-orbit orbit-two"/>
  <div className="hero-content featured-copy" key={slide.id}><div className="edition"><span className="live-dot"/>{slide.eyebrow}<span className="edition-line"/></div><h1>{slide.headlineTop}<br/>{slide.headlinePrefix} <em>{slide.headlineAccent}</em></h1><p style={{whiteSpace:'pre-line'}}>{slide.description}</p><div className="hero-actions"><button className="primary" onClick={()=>onBrowse()}>{slide.primaryLabel}<ArrowUpRight size={19}/></button><button className="text-button" onClick={()=>choose()}>{slide.secondaryLabel}<ArrowRight size={17}/></button></div><div className="hero-formats"><Monitor size={16}/><span>DESKTOP</span><i/><Smartphone size={15}/><span>MOBILE</span><i/><span>YOUR WORLD</span></div></div>
