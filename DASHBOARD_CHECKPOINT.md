@@ -26,3 +26,7 @@
 - Public gallery uses its original clipped image/hover; sets add only a Layers2 Set/count badge. Clicking a set opens WallpaperStudio directly, cover first, with previous/next controls. Removed public stack-selection interstitial.
 - Admin arrangement only: removed drag and ignores old x/y offsets; cover pinned front, fan direction reversed, bounded rotation and non-cover layer controls retained. Card borders restored. Saved photo order puts cover at the top of the stack.
 - Validation: build, mocked browser save/reopen/add-photo checks, separate file-picker modes, live text, no drag, cover persisted front, clipped hover, no public stack dialog, viewer next/previous, mobile overflow. No deployment.
+
+- Gallery placement is independent of phone/desktop availability. Admin selects Automatic, Portrait only, Landscape only or Both for each post/set; old posts default to Automatic from cover dimensions. Each individual photo in a set stores its own device availability (Phone, Desktop or Both) in photos JSON; old photos default to Both. Viewer hides unsupported formats and selects an allowed format on photo navigation.
+- Hero slide Phone clock editor and small-card clock overlay removed. Added a bottom Save display control to both Hero slides and Wallpaper Studio editors.
+- Supabase migration wallpaper_gallery_placement applied and verified; SQL in docs/gallery-and-device-settings.sql. Browser checks with mocked auth/API cover gallery Both, photo-only device restrictions, set editing and viewer transitions; build passed. No deployment.
