@@ -1,0 +1,17 @@
+import React,{useState} from 'react';
+import {supabase} from '../supabase';
+export default function BulkUpload({onDirty,onBusy,onSaved}){
+const [files,setFiles]=useState([]),[form,setForm]=useState({idol_name:'',group_name:'',description:'',published:false}),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
+const change=(key,value)=>{setForm(f=>({...f,[key]:value}));onDirty(true)};
+async function submit(e){e.preventDefault();if(!files.length)return;setBusy(true);onBusy(true);const failed=[];let count=0;
+for(let i=0;i<files.length;i++){const file=files[i];let path=null;setMessage(`Uploading ${i+1} of ${files.length}…`);try{
+if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>26214400)throw Error('Use JPG, PNG or WebP under 25 MB.');
+const bitmap=await createImageBitmap(file);const dimensions={original_width:bitmap.width,original_height:bitmap.height};bitmap.close();
+const key=crypto.randomUUID()+'.'+({'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[file.type]);
+const upload=await supabase.storage.from('wallpapers').upload(key,file);if(upload.error)throw upload.error;path=key;
+const result=await supabase.from('wallpapers').insert({...form,...dimensions,title:file.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').slice(0,120)||'Untitled wallpaper',storage_path:key});if(result.error)throw result.error;path=null;count++;
+}catch(error){if(path)await supabase.storage.from('wallpapers').remove([path]);failed.push({file,error:error.message})}}
+setFiles(failed.map(f=>f.file));onDirty(failed.length>0);setMessage(`${count} uploaded.`+(failed.length?' Failed files remain selected for retry: '+failed.map(f=>f.file.name+' — '+f.error).join('; '):' All photos added to your collection.'));setBusy(false);onBusy(false);onSaved();
+}
+return <section className="glass admin-editor"><h2>Upload a collection</h2><p>Each photo becomes its own card. Artist, group and description apply to every photo. Titles come from filenames and can be edited later.</p><form onSubmit={submit}><fieldset disabled={busy} style={{border:0,padding:0}}><div className="admin-fields"><label className="admin-upload">Choose multiple photos<input type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={e=>{setFiles(Array.from(e.target.files||[]));onDirty(true);setMessage('')}}/></label><p>{files.length} photos selected · JPG, PNG or WebP · 25 MB per photo</p><div style={{maxHeight:180,overflow:'auto'}}>{files.map((f,i)=><div key={i} style={{display:'flex',justifyContent:'space-between',padding:6}}><span>{f.name}</span><button type="button" aria-label={'Remove '+f.name} onClick={()=>{setFiles(list=>list.filter((_,n)=>n!==i));onDirty(true)}}>×</button></div>)}</div><div className="admin-field-pair"><label>Artist<input required value={form.idol_name} onChange={e=>change('idol_name',e.target.value)}/></label><label>Group<input required value={form.group_name} onChange={e=>change('group_name',e.target.value)}/></label></div><label>Shared description<textarea rows={4} value={form.description} onChange={e=>change('description',e.target.value)}/></label><label className="admin-publish"><input type="checkbox" checked={form.published} onChange={e=>change('published',e.target.checked)}/>Show all in the public gallery</label><button className="admin-primary" disabled={!files.length||busy}>{busy?'Uploading…':`Upload ${files.length} photos`}</button></div></fieldset></form>{message&&<p role="status">{message}</p>}</section>
+}
