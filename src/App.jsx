@@ -35,8 +35,8 @@ export default function App(){
  {!filtered.length&&<div className="empty"><Heart size={28}/><h3>No wallpapers here yet.</h3><p>Try another artist or save a moment you love.</p><button className="primary" onClick={()=>{setSavedOnly(false);setGroup('All artists');setArtist('All idols');setEra('All eras');setQuery('');setFormat('all')}}>Explore all wallpapers <ArrowRight size={17}/></button></div>}
  <div className="collection-end"><span>{filtered.length} curated moments</span><span>More worlds to discover. This is only the beginning.</span><Sparkles size={17}/></div></section>
  <StudioSection config={studio} onSelect={setSelected}/>
- <section className="closing"><p>For the fans. For the feeling.</p><h2>Take your world with you.</h2><button onClick={()=>browse('aespa')}>BACK TO THE AESPA EDIT <ArrowUpRight size={18}/></button></section></main>
- <footer><a className="wordmark" href="#">kwangya<span>✳</span></a><p>An independent fan project. Not affiliated with artists or agencies.<br/>Photography belongs to its respective owners. Sources are linked in each preview.</p><span>MADE FOR YOUR UNIVERSE <span>✦</span></span></footer>
+ <section className="closing"><p>For the fans. For the feeling.</p><h2>Take your world with you.</h2><button onClick={()=>browse()}>BACK TO THE COLLECTION <ArrowUpRight size={18}/></button></section></main>
+ <footer><a className="wordmark" href="#">kwangya<span>✳</span></a><p>An independent fan project. Not affiliated with artists or agencies.<br/>Photography belongs to its respective owners.</p><span>MADE FOR YOUR UNIVERSE <span>✦</span></span></footer>
  {selected&&<WallpaperStudio item={selected} onClose={()=>setSelected(null)} saved={saved.includes(selected.id)} onSave={()=>toggle(selected.id)}/>}
  </div>
 }
