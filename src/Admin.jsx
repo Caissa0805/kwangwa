@@ -6,7 +6,7 @@ import WallpaperEditPanel from './components/WallpaperEditPanel';
 import DisplayEditor from './components/DisplayEditor';
 import AdminConfirm from './components/AdminConfirm';
 import BrandMark from './components/BrandMark';
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import {motion,useReducedMotion} from 'framer-motion';
 import {Plus,Search,ArrowUpRight,Images,LogOut,Upload,Trash2,Check,Heart,LayoutGrid} from 'lucide-react';
 import {supabase} from './supabase';
@@ -14,8 +14,9 @@ import './dashboard.css';
 const empty={title:'',description:'',idol_name:'',group_name:'',published:false};
 async function asset(path){if(path?.startsWith('/images/'))return path;const {data,error}=await supabase.storage.from('wallpapers').createSignedUrl(path,3600);if(error)throw error;return data.signedUrl}
 export default function Admin(){
+ const currentAuthId=useRef(null);
  const reduce=useReducedMotion(),[session,setSession]=useState(null),[authReady,setAuthReady]=useState(false),[allowed,setAllowed]=useState(false),[email,setEmail]=useState(''),[rows,setRows]=useState([]),[form,setForm]=useState(empty),[editing,setEditing]=useState(null),[photo,setPhoto]=useState(null),[preview,setPreview]=useState(''),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[query,setQuery]=useState(''),[filter,setFilter]=useState('All'),[dirty,setDirty]=useState(false),[confirmation,setConfirmation]=useState(null),[bulk,setBulk]=useState(false),[draftRevision,setDraftRevision]=useState(0),[editPopup,setEditPopup]=useState(false),[page,setPage]=useState(()=>location.hash==='#hero-slides'?'hero':location.hash==='#studio-display'?'studio':'overview'),[displayDirty,setDisplayDirty]=useState(false),[displayBusy,setDisplayBusy]=useState(false);
- useEffect(()=>{supabase.auth.getSession().then(({data,error})=>{setSession(data.session);setAuthReady(true);if(error)setMessage(error.message)});const {data:{subscription}}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);setAllowed(false)});return()=>subscription.unsubscribe()},[]);
+ useEffect(()=>{let live=true;supabase.auth.getSession().then(({data,error})=>{if(!live)return;const initial=data.session;if(initial){currentAuthId.current=initial.user.id;setSession(prev=>prev?.user?.id===initial.user.id?prev:initial)}setAuthReady(true);if(error)setMessage(error.message)});const {data:{subscription}}=supabase.auth.onAuthStateChange((event,next)=>{if(event==='SIGNED_OUT'||!next){currentAuthId.current=null;setSession(null);setAllowed(false);setRows([]);return}if(currentAuthId.current===next.user.id)return;currentAuthId.current=next.user.id;setAllowed(false);setSession(next)});return()=>{live=false;subscription.unsubscribe()}},[]);
  useEffect(()=>{let live=true;if(!session)return;supabase.from('admin_users').select('user_id').eq('user_id',session.user.id).maybeSingle().then(({data,error})=>{if(!live)return;setAllowed(!!data&&!error);if(data)refresh();if(error)setMessage(error.message)});return()=>{live=false}},[session]);
  useEffect(()=>{if(!photo){setPreview(editing?.image||'');return}const u=URL.createObjectURL(photo);setPreview(u);return()=>URL.revokeObjectURL(u)},[photo,editing]);
  useEffect(()=>{const before=e=>{if(dirty||displayDirty){e.preventDefault();e.returnValue=''}};window.addEventListener('beforeunload',before);return()=>window.removeEventListener('beforeunload',before)},[dirty,displayDirty]);
