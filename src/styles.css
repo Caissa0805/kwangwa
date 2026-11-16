@@ -6,3 +6,6 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
 
 .catalog-tools{display:flex;align-items:end;gap:18px;padding-top:22px}.catalog-tools label{display:flex;flex-direction:column;gap:8px;font-size:10px;color:#a9b4ce}.catalog-tools select{background:#141a29;color:#e6ecff;border:1px solid #687a9c66;border-radius:6px;padding:10px 30px 10px 12px;min-width:180px;font:inherit;font-size:12px}.catalog-tools select:focus-visible{outline:2px solid #afc2ff;outline-offset:3px}.catalog-range{margin-left:auto;color:#919bb4;font-size:10px;padding-bottom:10px}.editor-controls .source-metadata{font-size:10px;color:#a9b4ce;line-height:1.8;margin-top:12px}.source-metadata span{display:block;margin:0!important}.card-meta{align-items:flex-start}.card-meta>span:last-child{max-width:46%;text-align:right;line-height:1.5}.group-tabs{flex-wrap:wrap}@media(max-width:760px){.catalog-tools{flex-wrap:wrap;gap:12px}.catalog-tools label{flex:1;min-width:130px}.catalog-tools select{width:100%;min-width:0;max-width:100%}.catalog-range{margin-left:0;width:100%;padding-bottom:0}.card-meta{font-size:8px}.filter-row{align-items:flex-start}}
+
+/* Skip offscreen card painting while retaining the existing grid geometry. */
+.wallpaper-card{content-visibility:auto;contain-intrinsic-block-size:auto 410px}
